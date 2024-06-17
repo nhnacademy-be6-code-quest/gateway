@@ -1,0 +1,12 @@
+server:
+  port: 8080
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url.defaultZone:
+  instance:
+    prefer-ip-address: true
+spring:
+  application:
+    name: gateway
