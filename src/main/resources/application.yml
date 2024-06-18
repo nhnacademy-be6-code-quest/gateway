@@ -1,10 +1,10 @@
 server:
-  port: 8081
+  port: 8001
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
-    service-url.defaultZone:
+    service-url.defaultZone: http://admin:1234@localhost:8002/eureka
   instance:
     prefer-ip-address: true
 spring:
