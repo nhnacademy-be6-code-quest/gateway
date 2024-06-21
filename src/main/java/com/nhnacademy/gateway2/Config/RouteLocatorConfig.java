@@ -17,24 +17,20 @@ public class RouteLocatorConfig {
     private final JwtAuthorizationHeaderFilter jwtAuthorizationHeaderFilter;
 
     @Bean
-    public RouteLocator myRoute(RouteLocatorBuilder builder ) {
-        //TODO#1 router설정, gateway는 모든 요청의 진입점 입니다.
-
-        //TODO#1-3 서비스 명과 path는 추후 수정 됩니다.
+    public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
-//                .route("auth-service", p->p.path("/login")
-//                        //TODO#1-3 jwt를 검증할 Filter를 등록합니다
-//                        .uri("lb://AUTH-SERVICE")
-//                )
-//                //TODO#1-2 order 서비스는 jwtAuthorizationHeaderFilter가 적용됩니다. (인증 없이 접근 시 로그인 페이지로 이동)
-//                .route("order-service", p->p.path("/order")
-//                        .filters(f->f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-//                        .uri(("lb://ORDER-SERVICE")
-//                        ))
+                .route("auth", p -> p.path("/login")
+                            .uri("lb://AUTH"))
+                .route("auth", p -> p.path("/logout")
+                        .uri("lb://AUTH"))
+                .route("auth", p -> p.path("/reissue")
+                        .uri("lb://AUTH"))
                 .route("client", p -> p.path("/api/client/**")
                         .uri("lb://CLIENT"))
+                .route("client", p -> p.path("/api/test")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://CLIENT"))
                 .build();
-
     }
 
     @Bean
@@ -51,5 +47,4 @@ public class RouteLocatorConfig {
     public Encoder feignEncoder(HttpMessageConverters messageConverters) {
         return new SpringEncoder(() -> messageConverters);
     }
-
 }
