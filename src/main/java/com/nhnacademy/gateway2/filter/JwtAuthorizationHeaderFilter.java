@@ -35,26 +35,31 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
     @Override
     public GatewayFilter apply(Config config) {
         return  (exchange, chain)->{
-            log.debug("jwt-validation-filter");
+            log.info("jwt-validation-filter");
             ServerHttpRequest request = exchange.getRequest();
             if(!request.getHeaders().containsKey("access")) {
+                log.info("jwt-validation-filter access header missing");
                 return handleUnauthorized(exchange);
             }else{
                 String accessToken = request.getHeaders().getFirst("access");
                 String refreshToken = request.getHeaders().getFirst("refresh");
 
                 if (jwtUtils.isExpired(accessToken)) {
+                    log.info("jwt-validation-filter expired");
                     return handleUnauthorized(exchange);
                 } else if (!jwtUtils.getCategory(accessToken).equals("access")) {
+                    log.info("jwt-validation-filter notfound access");
                     return handleUnauthorized(exchange);
-                } else if (redisTemplate.opsForHash().get(refreshToken, RedisUtils.getTokenPrefix()) == null) {
+                } else if (redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(refreshToken)) == null) {
+                    log.info("jwt-validation-filter refresh unauthorized");
                     return handleUnauthorized(exchange);
                 }
 
                 log.debug("accessToken:{}",accessToken);
 
                 exchange.mutate().request(builder -> {
-                    builder.header("X-USER-ID","nhnacademy");
+                    builder.header("email",(String) redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(accessToken)));
+                    builder.header("role", jwtUtils.getRole(accessToken));
                 });
             }
 

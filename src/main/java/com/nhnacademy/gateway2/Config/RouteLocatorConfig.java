@@ -25,9 +25,9 @@ public class RouteLocatorConfig {
                         .uri("lb://AUTH"))
                 .route("auth", p -> p.path("/reissue")
                         .uri("lb://AUTH"))
-                .route("client", p -> p.path("/api/client/**")
+                .route("client", p -> p.path("/api/client/login")
                         .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/test")
+                .route("client", p -> p.path("/api/client")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://CLIENT"))
                 .build();
