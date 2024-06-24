@@ -20,7 +20,7 @@ public class RouteLocatorConfig {
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("auth", p -> p.path("/login")
-                            .uri("lb://AUTH"))
+                        .uri("lb://AUTH"))
                 .route("auth", p -> p.path("/logout")
                         .uri("lb://AUTH"))
                 .route("auth", p -> p.path("/reissue")
@@ -28,6 +28,13 @@ public class RouteLocatorConfig {
                 .route("client", p -> p.path("/api/client/login")
                         .uri("lb://CLIENT"))
                 .route("client", p -> p.path("/api/client")
+                        .and().method("POST")
+                        .uri("lb://CLIENT"))
+                .route("client", p -> p.path("/api/client")
+                        .and().method("GET")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://CLIENT"))
+                .route("client", p -> p.path("/api/client/address")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://CLIENT"))
                 .build();
