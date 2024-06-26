@@ -27,7 +27,7 @@ public class RouteLocatorConfig {
                         .and().method("POST")
                         .uri("lb://CLIENT"))
                 .route("client", p -> p.path("/api/client")
-                        .and().method("GET", "DELETE")
+                        .and().method("GET", "DELETE", "PUT")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://CLIENT"))
                 .route("client", p -> p.path("/api/client/address")
