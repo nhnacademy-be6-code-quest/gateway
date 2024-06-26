@@ -34,13 +34,13 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
 
     @Override
     public GatewayFilter apply(Config config) {
-        return  (exchange, chain)->{
+        return (exchange, chain) -> {
             log.info("jwt-validation-filter");
             ServerHttpRequest request = exchange.getRequest();
-            if(!request.getHeaders().containsKey("access")) {
+            if (!request.getHeaders().containsKey("access")) {
                 log.info("jwt-validation-filter access header missing");
                 return handleUnauthorized(exchange);
-            }else{
+            } else {
                 String accessToken = request.getHeaders().getFirst("access");
                 String refreshToken = request.getHeaders().getFirst("refresh");
 
@@ -55,11 +55,11 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
                     return handleUnauthorized(exchange);
                 }
 
-                log.debug("accessToken:{}",accessToken);
+                log.debug("accessToken:{}", accessToken);
 
                 exchange.mutate().request(builder -> {
-                    builder.header("email",(String) redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(accessToken)));
-                    builder.header("role", jwtUtils.getRole(accessToken));
+                    builder.header("X-User-Id", String.valueOf(redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(accessToken))));
+                    builder.header("X-User-Role", jwtUtils.getRole(accessToken));
                 });
             }
 
