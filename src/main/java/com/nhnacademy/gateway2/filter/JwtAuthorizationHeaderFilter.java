@@ -55,12 +55,12 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
                     return handleUnauthorized(exchange);
                 }
 
-                log.debug("accessToken:{}", accessToken);
-
                 exchange.mutate().request(builder -> {
                     builder.header("X-User-Id", String.valueOf(redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(accessToken))));
                     builder.header("X-User-Role", jwtUtils.getRole(accessToken));
                 });
+
+                log.info("X-User-Id :{}", request.getHeaders().getFirst("X-User-Id"));
             }
 
             return chain.filter(exchange);
