@@ -19,7 +19,7 @@ public class RouteLocatorConfig {
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("auth", p -> p.path("/login", "/logout", "/reissue")
+                .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue")
                         .uri("lb://AUTH"))
                 .route("client", p -> p.path("/api/client/login")
                         .uri("lb://CLIENT"))
