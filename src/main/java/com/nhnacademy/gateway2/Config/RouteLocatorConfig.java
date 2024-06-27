@@ -36,8 +36,44 @@ public class RouteLocatorConfig {
                 .route("client", p -> p.path("/api/client/phone")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://CLIENT"))
-                .build();
+
+                .route("review", p -> p.path("/no-photo-reviews")
+                    .and().method("POST", "GET")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/no-photo-reviews/{id}")
+                    .and().method("GET", "PUT", "DELETE")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/no-photo-reviews/client")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/no-photo-reviews/product/{productId}")
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/no-photo-reviews/has-written/{orderDetailId}")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+
+                .route("review", p -> p.path("/photo-reviews")
+                    .and().method("POST", "GET")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/photo-reviews/{id}")
+                    .and().method("GET", "PUT", "DELETE")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/photo-reviews/client")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/photo-reviews/product/{productId}")
+                    .uri("lb://REVIEW"))
+                .route("review", p -> p.path("/photo-reviews/has-written/{orderDetailId}")
+                    .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                    .uri("lb://REVIEW"))
+            .build();
     }
+
+
 
     @Bean
     public ServerCodecConfigurer serverCodecConfigurer() {
