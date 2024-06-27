@@ -17,26 +17,30 @@ public class RouteLocatorConfig {
     private final JwtAuthorizationHeaderFilter jwtAuthorizationHeaderFilter;
 
     @Bean
-    public RouteLocator myRoute(RouteLocatorBuilder builder) {
+    public RouteLocator myRoute(RouteLocatorBuilder builder ) {
+        //TODO#1 router설정, gateway는 모든 요청의 진입점 입니다.
+
+        //TODO#1-3 서비스 명과 path는 추후 수정 됩니다.
         return builder.routes()
-                .route("auth", p -> p.path("/login", "/logout", "/reissue")
-                        .uri("lb://AUTH"))
-                .route("client", p -> p.path("/api/client/login")
-                        .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/client")
-                        .and().method("POST")
-                        .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/client")
-                        .and().method("GET", "DELETE", "PUT")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/client/address")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/client/phone")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://CLIENT"))
+//                .route("auth-service", p->p.path("/login")
+//                        //TODO#1-3 jwt를 검증할 Filter를 등록합니다
+//                        .uri("lb://AUTH-SERVICE")
+//                )
+//                //TODO#1-2 order 서비스는 jwtAuthorizationHeaderFilter가 적용됩니다. (인증 없이 접근 시 로그인 페이지로 이동)
+//                .route("order-service", p->p.path("/order")
+//                        .filters(f->f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+//                        .uri(("lb://ORDER-SERVICE")
+//                        ))
+//                .route("client", p -> p.path("/api/client/**")
+//                        .uri("lb://CLIENT"))
+                .route("PRODUCT-SERVICE", p -> p.path("/api/product/**")
+                        .uri("lb://PRODUCT-SERVICE"))
+                .route("ADMIN-SERVICE2", p -> p.path("/api/product/**")
+                        .uri("lb://PRODUCT-SERVICE"))
+                .route("TAG-SERVICE", p -> p.path("/api/product/**")
+                        .uri("lb://PRODUCT-SERVICE"))
                 .build();
+
     }
 
     @Bean
@@ -53,4 +57,5 @@ public class RouteLocatorConfig {
     public Encoder feignEncoder(HttpMessageConverters messageConverters) {
         return new SpringEncoder(() -> messageConverters);
     }
+
 }
