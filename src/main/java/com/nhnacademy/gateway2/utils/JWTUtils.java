@@ -9,6 +9,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -28,8 +29,8 @@ public class JWTUtils {
         return getClaimsFromToken(token).get("uuid", String.class);
     }
 
-    public String getRole(String token) {
-        return getClaimsFromToken(token).get("role", String.class);
+    public List<String> getRole(String token) {
+        return getClaimsFromToken(token).get("role", List.class);
     }
 
     public boolean isExpired(String token) {
