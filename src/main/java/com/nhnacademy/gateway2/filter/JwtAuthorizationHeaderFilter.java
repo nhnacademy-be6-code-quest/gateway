@@ -57,7 +57,9 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
 
                 exchange.mutate().request(builder -> {
                     builder.header("X-User-Id", String.valueOf(redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(accessToken))));
-                    builder.header("X-User-Role", jwtUtils.getRole(accessToken));
+                    for (String role : jwtUtils.getRole(accessToken)) {
+                        builder.header("X-User-Role", role);
+                    }
                 });
 
                 log.info("X-User-Id :{}", request.getHeaders().getFirst("X-User-Id"));
