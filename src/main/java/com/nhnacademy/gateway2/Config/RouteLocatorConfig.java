@@ -19,11 +19,11 @@ public class RouteLocatorConfig {
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue")
+                .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue", "/api/payco/login/callback", "/api/oauth")
                         .uri("lb://AUTH"))
                 .route("client", p -> p.path("/api/client/login")
                         .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/client")
+                .route("client", p -> p.path("/api/client", "/api/oauth/client")
                         .and().method("POST")
                         .uri("lb://CLIENT"))
                 .route("client", p -> p.path("/api/client")
