@@ -4,12 +4,10 @@ package com.nhnacademy.gateway2.filter;
 import java.net.URI;
 
 import com.nhnacademy.gateway2.utils.JWTUtils;
-import com.nhnacademy.gateway2.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpHeaders;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;

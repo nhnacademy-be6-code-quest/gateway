@@ -19,9 +19,9 @@ public class RouteLocatorConfig {
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue", "/api/payco/login/callback", "/api/oauth")
+                .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue", "/api/payco/login/callback", "/api/oauth", "/api/payco/recovery/callback")
                         .uri("lb://AUTH"))
-                .route("client", p -> p.path("/api/client/login")
+                .route("client", p -> p.path("/api/client/login", "/api/client/change-password", "/api/client/recovery-account", "/api/client/recovery-oauth-account")
                         .uri("lb://CLIENT"))
                 .route("client", p -> p.path("/api/client", "/api/oauth/client")
                         .and().method("POST")
@@ -70,6 +70,9 @@ public class RouteLocatorConfig {
                 .route("review", p -> p.path("/photo-reviews/has-written/{orderDetailId}")
                     .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                     .uri("lb://REVIEW"))
+
+                .route("message", p -> p.path("/send/change-password", "/send/recover-account")
+                    .uri("lb://MESSAGE"))
             .build();
     }
 
