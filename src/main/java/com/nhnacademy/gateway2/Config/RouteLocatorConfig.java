@@ -1,6 +1,7 @@
 package com.nhnacademy.gateway2.Config;
 
 import com.nhnacademy.gateway2.filter.JwtAuthorizationHeaderFilter;
+import com.nhnacademy.gateway2.filter.SendUserIdOfHeaderFilter;
 import feign.codec.Encoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -15,6 +16,8 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 @Configuration
 public class RouteLocatorConfig {
     private final JwtAuthorizationHeaderFilter jwtAuthorizationHeaderFilter;
+
+    private final SendUserIdOfHeaderFilter sendUserIdOfHeaderFilter;
 
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
@@ -70,9 +73,17 @@ public class RouteLocatorConfig {
                 .route("review", p -> p.path("/photo-reviews/has-written/{orderDetailId}")
                     .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                     .uri("lb://REVIEW"))
-
                 .route("message", p -> p.path("/send/change-password", "/send/recover-account")
                     .uri("lb://MESSAGE"))
+                .route("product", p -> p.path("/api/product/admin/**")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://PRODUCT-SERVICE"))
+                .route("product", p -> p.path("/api/product/client/**")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://PRODUCT-SERVICE"))
+                .route("product", p -> p.path("/api/product/**")
+                        .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
+                        .uri("lb://PRODUCT-SERVICE"))
             .build();
     }
 
