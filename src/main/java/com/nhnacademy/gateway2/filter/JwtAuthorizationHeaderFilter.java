@@ -22,8 +22,13 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
     public static class Config {
     }
 
-    private Mono<Void> handleUnauthorized(ServerWebExchange exchange) {
+    private Mono<Void> handleExpired(ServerWebExchange exchange) {
         exchange.getResponse().setStatusCode(HttpStatus.SEE_OTHER);
+        return exchange.getResponse().setComplete();
+    }
+
+    private Mono<Void> handleInvalidToken(ServerWebExchange exchange) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         return exchange.getResponse().setComplete();
     }
 
@@ -34,16 +39,16 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
             ServerHttpRequest request = exchange.getRequest();
             if (!request.getHeaders().containsKey("access")) {
                 log.info("jwt-validation-filter access header missing");
-                return handleUnauthorized(exchange);
+                return handleInvalidToken(exchange);
             } else {
                 String accessToken = request.getHeaders().getFirst("access");
 
                 if (jwtUtils.isExpired(accessToken)) {
                     log.info("jwt-validation-filter expired");
-                    return handleUnauthorized(exchange);
+                    return handleExpired(exchange);
                 } else if (!jwtUtils.getCategory(accessToken).equals("access")) {
                     log.info("jwt-validation-filter notfound access");
-                    return handleUnauthorized(exchange);
+                    return handleInvalidToken(exchange);
                 }
 
                 exchange.mutate().request(builder -> {
