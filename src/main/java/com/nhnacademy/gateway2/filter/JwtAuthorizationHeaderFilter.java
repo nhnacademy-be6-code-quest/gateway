@@ -1,8 +1,5 @@
 package com.nhnacademy.gateway2.filter;
 
-
-import java.net.URI;
-
 import com.nhnacademy.gateway2.utils.JWTUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +37,6 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
                 return handleUnauthorized(exchange);
             } else {
                 String accessToken = request.getHeaders().getFirst("access");
-                String refreshToken = request.getHeaders().getFirst("refresh");
 
                 if (jwtUtils.isExpired(accessToken)) {
                     log.info("jwt-validation-filter expired");
@@ -48,13 +44,10 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
                 } else if (!jwtUtils.getCategory(accessToken).equals("access")) {
                     log.info("jwt-validation-filter notfound access");
                     return handleUnauthorized(exchange);
-                } else if (redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(refreshToken)) == null) {
-                    log.info("jwt-validation-filter refresh unauthorized");
-                    return handleUnauthorized(exchange);
                 }
 
                 exchange.mutate().request(builder -> {
-                    builder.header("X-User-Id", String.valueOf(redisTemplate.opsForHash().get(refreshToken, jwtUtils.getUUID(accessToken))));
+                    builder.header("X-User-Id", String.valueOf(redisTemplate.opsForHash().get(accessToken, jwtUtils.getUUID(accessToken))));
                     for (String role : jwtUtils.getRole(accessToken)) {
                         builder.header("X-User-Role", role);
                     }
