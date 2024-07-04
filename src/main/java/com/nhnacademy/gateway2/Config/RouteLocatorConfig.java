@@ -84,6 +84,23 @@ public class RouteLocatorConfig {
                 .route("product", p -> p.path("/api/product/**")
                         .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
                         .uri("lb://PRODUCT-SERVICE"))
+
+                // TODO order 쪽에서 product, coupon 추가한 내용. 충돌나면 사게!
+                .route("product", p -> p.path("/api/product/**")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://PRODUCT-SERVICE"))
+                .route("coupon", p -> p.path("/api/coupon/**")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb:COUPON"))
+
+                .route("payment", p -> p.path("/api/client/order/**")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://orderPaymentRefund"))
+                .route("shipping", p -> p.path("/admin/shipping-policy/**")
+                        .and().query("type")
+                        //.filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://orderPaymentRefund"))
+
             .build();
     }
 
