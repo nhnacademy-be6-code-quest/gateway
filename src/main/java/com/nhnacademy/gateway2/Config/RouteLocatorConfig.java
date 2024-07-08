@@ -99,10 +99,14 @@ public class RouteLocatorConfig {
                 .route("order", p -> p.path("/api/non-client/orders/**")
                         .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
+                .route("order", p -> p.path("/api/order/**")
+                        .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
+                        .uri("lb://orderPaymentRefund"))
                 .route("shipping", p -> p.path("/shipping-policy/**")
                         .and().query("type")
                         //.filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
+
 
             .build();
     }
