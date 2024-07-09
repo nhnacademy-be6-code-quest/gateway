@@ -1,7 +1,6 @@
 package com.nhnacademy.gateway2.Config;
 
 import com.nhnacademy.gateway2.filter.JwtAuthorizationHeaderFilter;
-import com.nhnacademy.gateway2.filter.SendUserIdOfHeaderFilter;
 import feign.codec.Encoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
