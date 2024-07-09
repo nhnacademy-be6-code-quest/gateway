@@ -24,6 +24,3 @@ spring:
       host: 133.186.241.167
       port: 6379
       password: '*N2vya7H@muDTwdNMR!'
-logging:
-  level:
-    root: debug
