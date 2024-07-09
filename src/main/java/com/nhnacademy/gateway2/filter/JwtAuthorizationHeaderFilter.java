@@ -39,7 +39,10 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
             ServerHttpRequest request = exchange.getRequest();
             if (!request.getHeaders().containsKey("access")) {
                 log.info("jwt-validation-filter access header missing");
-                return handleInvalidToken(exchange);
+                exchange.mutate().request(builder -> {
+                    builder.header("X-User-Id", null);
+                });
+                return chain.filter(exchange);
             } else {
                 String accessToken = request.getHeaders().getFirst("access");
 

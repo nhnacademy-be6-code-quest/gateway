@@ -70,7 +70,7 @@ public class RouteLocatorConfig {
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://PRODUCT-SERVICE"))
                 .route("product", p -> p.path("/api/product/**")
-                        .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://PRODUCT-SERVICE"))
 
                 // TODO order 쪽에서 product, coupon 추가한 내용. 충돌나면 삭제!
@@ -85,10 +85,10 @@ public class RouteLocatorConfig {
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
                 .route("order", p -> p.path("/api/non-client/orders/**")
-                        .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
                 .route("order", p -> p.path("/api/order/**")
-                        .filters(f -> f.filter(sendUserIdOfHeaderFilter.apply(new SendUserIdOfHeaderFilter.Config())))
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
                 .route("shipping", p -> p.path("/shipping-policy/**")
                         .and().query("type")
