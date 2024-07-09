@@ -17,8 +17,6 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 public class RouteLocatorConfig {
     private final JwtAuthorizationHeaderFilter jwtAuthorizationHeaderFilter;
 
-    private final SendUserIdOfHeaderFilter sendUserIdOfHeaderFilter;
-
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
