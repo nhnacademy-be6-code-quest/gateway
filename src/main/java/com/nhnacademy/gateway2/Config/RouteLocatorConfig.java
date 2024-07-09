@@ -91,7 +91,37 @@ public class RouteLocatorConfig {
                         .and().query("type")
                         //.filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
+            .route("coupon", p -> p.path("/api/coupon/myPage")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/register/{couponPolicyId}")
+                .and().method("POST")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
 
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/update")
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/policy/**")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/policy/register")
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/type")
+                .and().method("GET")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("couponClient", p -> p.path("/api/client/coupon-payment")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://Client"))
+            .route("COUPON", p -> p.path("/api/coupon/adminPage")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
 
             .build();
     }
