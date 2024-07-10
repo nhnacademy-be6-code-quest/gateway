@@ -162,7 +162,7 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
-            .route("pointOrder", p -> p.path("/api/point/point/order")
+            .route("pointOrder", p -> p.path("/api/point/order")
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
