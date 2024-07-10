@@ -91,37 +91,81 @@ public class RouteLocatorConfig {
                         .and().query("type")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
-                .route("coupon", p -> p.path("/api/coupon/myPage")
-                    .filters(f -> f.filter(
-                        jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                    .uri("lb://COUPON"))
-                .route("coupon", p -> p.path("/api/coupon/register/{couponPolicyId}")
-                    .and().method("POST")
-                    .filters(f -> f.filter(
-                        jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+            .route("coupon", p -> p.path("/api/coupon/myPage")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/register/{couponPolicyId}")
+                .and().method("POST")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
 
-                    .uri("lb://COUPON"))
-                .route("coupon", p -> p.path("/api/coupon/update")
-                    .uri("lb://COUPON"))
-                .route("coupon", p -> p.path("/api/coupon/policy/**")
-                    .filters(f -> f.filter(
-                        jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                    .uri("lb://COUPON"))
-                .route("coupon", p -> p.path("/api/coupon/policy/register")
-                    .uri("lb://COUPON"))
-                .route("coupon", p -> p.path("/api/coupon/type")
-                    .and().method("GET")
-                    .filters(f -> f.filter(
-                        jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                    .uri("lb://COUPON"))
-                .route("couponClient", p -> p.path("/api/client/coupon-payment")
-                    .filters(f -> f.filter(
-                        jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                    .uri("lb://Client"))
-                .route("COUPON", p -> p.path("/api/coupon/adminPage")
-                    .filters(f -> f.filter(
-                        jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                    .uri("lb://COUPON"))
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/update")
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/policy/**")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/policy/register")
+                .uri("lb://COUPON"))
+            .route("coupon", p -> p.path("/api/coupon/type")
+                .and().method("GET")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("couponClient", p -> p.path("/api/client/coupon-payment")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://Client"))
+            .route("COUPON", p -> p.path("/api/coupon/adminPage")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+            .route("pointAccumulation", p -> p.path("/api/point/myPage/reward")
+                .and().method("GET")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointAccumulation", p -> p.path("/api/point/adminPage/reward")
+                .and().method("GET")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy/register")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy/{pointPolicyId}")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointUsage", p -> p.path("/api/point/myPage/use")
+                .and().method("GET")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointUsage", p -> p.path("/api/point/adminPage/use")
+                .and().method("GET")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointOrder", p -> p.path("/api/point/use/payment")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointOrder", p -> p.path("/api/point")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointOrder", p -> p.path("/api/point/point/order")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
 
                 .route("search", p -> p.path("/api/search")
                         .and().method("GET")
