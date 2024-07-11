@@ -171,6 +171,11 @@ public class RouteLocatorConfig {
                         .and().method("GET")
                         .uri("lb://SEARCH"))
 
+                .route("client", p -> p.path("/api/client/role", "/api/client/privacy-page")
+                        .and().method("GET")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://CLIENT"))
+
             .build();
     }
 
