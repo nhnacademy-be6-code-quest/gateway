@@ -175,6 +175,9 @@ public class RouteLocatorConfig {
                         .and().method("GET")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://CLIENT"))
+                .route("client", p -> p.path("/api/client/grade")
+                        .and().method("PUT")
+                        .uri("lb://CLIENT"))
 
             .build();
     }
