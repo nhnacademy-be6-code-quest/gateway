@@ -179,6 +179,12 @@ public class RouteLocatorConfig {
                         .and().method("PUT")
                         .uri("lb://CLIENT"))
 
+            .route("Point", p -> p.path("/api/client/name")
+                .and().method("GET")
+                .uri("lb://Client"))
+            .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
+                .and().method("DELETE")
+                .uri("lb://POINT"))
             .build();
     }
 
