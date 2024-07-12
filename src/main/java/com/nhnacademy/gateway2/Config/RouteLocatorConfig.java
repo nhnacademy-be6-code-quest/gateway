@@ -166,7 +166,6 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
-
                 .route("search", p -> p.path("/api/search")
                         .and().method("GET")
                         .uri("lb://SEARCH"))
@@ -185,6 +184,14 @@ public class RouteLocatorConfig {
             .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
                 .and().method("DELETE")
                 .uri("lb://POINT"))
+            .route("birthdayUser", p -> p.path("/api/client/birth-coupon")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://Client"))
+            .route("paymentReward", p -> p.path("/api/coupon/payment/reward")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
             .build();
     }
 
