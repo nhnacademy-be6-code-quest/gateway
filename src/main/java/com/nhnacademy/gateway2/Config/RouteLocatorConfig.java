@@ -166,6 +166,7 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
+
                 .route("search", p -> p.path("/api/search")
                         .and().method("GET")
                         .uri("lb://SEARCH"))
