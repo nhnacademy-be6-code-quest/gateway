@@ -70,6 +70,8 @@ public class RouteLocatorConfig {
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://COUPON"))
 
+                .route("order", p -> p.path("/api/payment/grade/**")
+                        .uri("lb://orderPaymentRefund"))
                 .route("order", p -> p.path("/api/client/orders/**")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
