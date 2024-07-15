@@ -159,6 +159,14 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy/modify")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy/active")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
             .route("pointUsage", p -> p.path("/api/point/myPage/use")
                 .and().method("GET")
                 .filters(f -> f.filter(
@@ -192,15 +200,12 @@ public class RouteLocatorConfig {
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client/grade")
-                .and().method("PUT")
+                .and().method("PUT","GET")
                 .uri("lb://CLIENT"))
 
             .route("Point", p -> p.path("/api/client/name")
                 .and().method("GET")
                 .uri("lb://Client"))
-            .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
-                .and().method("DELETE")
-                .uri("lb://POINT"))
             .route("birthdayUser", p -> p.path("/api/client/birth-coupon")
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
