@@ -170,7 +170,7 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
             .route("userRank", p -> p.path("/api/client/grade")
-                .and().method("PUT")
+                .and().method("PUT","GET")
                 .uri("lb://CLIENT"))
             .route("userName", p -> p.path("/api/client/name")
                 .and().method("GET")
