@@ -14,33 +14,27 @@ import org.springframework.http.codec.ServerCodecConfigurer;
 @RequiredArgsConstructor
 @Configuration
 public class RouteLocatorConfig {
-
     private final JwtAuthorizationHeaderFilter jwtAuthorizationHeaderFilter;
 
     @Bean
     public RouteLocator myRoute(RouteLocatorBuilder builder) {
         return builder.routes()
-            .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue",
-                    "/api/payco/login/callback", "/api/oauth", "/api/payco/recovery/callback")
+            .route("auth", p -> p.path("/api/login", "/api/logout", "/api/reissue", "/api/payco/login/callback", "/api/oauth", "/api/payco/recovery/callback")
                 .uri("lb://AUTH"))
-            .route("client", p -> p.path("/api/client/login", "/api/client/change-password",
-                    "/api/client/recovery-account", "/api/client/recovery-oauth-account")
+            .route("client", p -> p.path("/api/client/login", "/api/client/change-password", "/api/client/recovery-account", "/api/client/recovery-oauth-account")
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client", "/api/oauth/client")
                 .and().method("POST")
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client")
                 .and().method("GET", "DELETE", "PUT")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client/address")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client/phone")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
 
             .route("review", p -> p.path("/api/image")
@@ -48,64 +42,49 @@ public class RouteLocatorConfig {
                 //.filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://REVIEW"))
 
-            .route("review", p -> p.path("/photo-reviews")
-                .and().method("POST", "GET")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+            .route("review", p -> p.path("/api/review", "/api/review/**", "/api/reviews/my")
+                .and().method("POST", "GET", "PUT")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://REVIEW"))
-            .route("review", p -> p.path("/photo-reviews/{id}")
-                .and().method("GET", "PUT", "DELETE")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+            .route("review", p -> p.path("/api/review/score", "/api/reviews/product")
+                .and().method("GET")
                 .uri("lb://REVIEW"))
-            .route("review", p -> p.path("/photo-reviews/client")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                .uri("lb://REVIEW"))
-            .route("review", p -> p.path("/photo-reviews/product/{productId}")
-                .uri("lb://REVIEW"))
-            .route("review", p -> p.path("/photo-reviews/has-written/{orderDetailId}")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                .uri("lb://REVIEW"))
+
             .route("message", p -> p.path("/send/change-password", "/send/recover-account")
                 .uri("lb://MESSAGE"))
             .route("product", p -> p.path("/api/product/admin/**")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://PRODUCT-SERVICE"))
             .route("product", p -> p.path("/api/product/client/**")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://PRODUCT-SERVICE"))
             .route("product", p -> p.path("/api/product/**")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://PRODUCT-SERVICE"))
 
-                // TODO order 쪽에서 product, coupon 추가한 내용. 충돌나면 삭제!
-                .route("product", p -> p.path("/api/product/**")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://PRODUCT-SERVICE"))
-                .route("coupon", p -> p.path("/api/coupon/**")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://COUPON"))
+            // TODO order 쪽에서 product, coupon 추가한 내용. 충돌나면 삭제!
+            .route("product", p -> p.path("/api/product/**")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://PRODUCT-SERVICE"))
+            .route("coupon", p -> p.path("/api/coupon/**")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
 
-                .route("order", p -> p.path("/api/payment/grade/**")
-                        .uri("lb://orderPaymentRefund"))
-                .route("order", p -> p.path("/api/client/orders/**")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://orderPaymentRefund"))
-                .route("order", p -> p.path("/api/non-client/orders/**")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://orderPaymentRefund"))
-                .route("order", p -> p.path("/api/order/**")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://orderPaymentRefund"))
-                .route("shipping", p -> p.path("/api/shipping-policy/**")
-                        .and().query("type")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://orderPaymentRefund"))
+            .route("order", p -> p.path("/api/payment/grade/**")
+                .uri("lb://orderPaymentRefund"))
+            .route("order", p -> p.path("/api/client/orders/**")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://orderPaymentRefund"))
+            .route("order", p -> p.path("/api/non-client/orders/**")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://orderPaymentRefund"))
+            .route("order", p -> p.path("/api/order/**")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://orderPaymentRefund"))
+            .route("shipping", p -> p.path("/api/shipping-policy/**")
+                .and().query("type")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://orderPaymentRefund"))
             .route("coupon", p -> p.path("/api/coupon/myPage")
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
@@ -159,14 +138,6 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
-            .route("pointPolicy", p -> p.path("/api/point/policy/modify")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                .uri("lb://POINT"))
-            .route("pointPolicy", p -> p.path("/api/point/policy/active")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                .uri("lb://POINT"))
             .route("pointUsage", p -> p.path("/api/point/myPage/use")
                 .and().method("GET")
                 .filters(f -> f.filter(
@@ -196,16 +167,17 @@ public class RouteLocatorConfig {
 
             .route("client", p -> p.path("/api/client/role", "/api/client/privacy-page")
                 .and().method("GET")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client/grade")
-                .and().method("PUT","GET")
+                .and().method("PUT")
                 .uri("lb://CLIENT"))
-
             .route("Point", p -> p.path("/api/client/name")
                 .and().method("GET")
                 .uri("lb://Client"))
+            .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
+                .and().method("DELETE")
+                .uri("lb://POINT"))
             .route("birthdayUser", p -> p.path("/api/client/birth-coupon")
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
@@ -216,6 +188,7 @@ public class RouteLocatorConfig {
                 .uri("lb://COUPON"))
             .build();
     }
+
 
 
     @Bean
