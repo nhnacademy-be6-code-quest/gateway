@@ -178,13 +178,12 @@ public class RouteLocatorConfig {
 
             .route("client", p -> p.path("/api/client/role", "/api/client/privacy-page")
                 .and().method("GET")
-                .filters(f -> f.filter(
-                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://CLIENT"))
             .route("client", p -> p.path("/api/client/grade")
                 .and().method("PUT","GET")
                 .uri("lb://CLIENT"))
-            .route("Point", p -> p.path("/api/client/name")
+            .route("userName", p -> p.path("/api/client/name")
                 .and().method("GET")
                 .uri("lb://Client"))
             .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
@@ -200,6 +199,7 @@ public class RouteLocatorConfig {
                 .uri("lb://COUPON"))
             .build();
     }
+
 
 
     @Bean
