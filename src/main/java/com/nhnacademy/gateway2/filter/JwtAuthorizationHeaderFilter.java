@@ -1,10 +1,10 @@
 package com.nhnacademy.gateway2.filter;
 
 import com.nhnacademy.gateway2.utils.JWTUtils;
+import com.nhnacademy.gateway2.utils.TransformerUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<JwtAuthorizationHeaderFilter.Config> {
     private final JWTUtils jwtUtils;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final TransformerUtils transformerUtils;
 
     public static class Config {
     }
@@ -52,7 +52,7 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
                 }
 
                 exchange.mutate().request(builder -> {
-                    builder.header("X-User-Id", String.valueOf(redisTemplate.opsForHash().get(accessToken, jwtUtils.getUUID(accessToken))));
+                    builder.header("X-User-Id", transformerUtils.decode(jwtUtils.getUUID(accessToken)));
                     for (String role : jwtUtils.getRole(accessToken)) {
                         builder.header("X-User-Role", role);
                     }
