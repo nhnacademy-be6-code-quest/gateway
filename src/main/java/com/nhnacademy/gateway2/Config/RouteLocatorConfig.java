@@ -209,6 +209,9 @@ public class RouteLocatorConfig {
             .route("Point", p -> p.path("/api/client/name")
                 .and().method("GET")
                 .uri("lb://Client"))
+            .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
+                .and().method("DELETE")
+                .uri("lb://POINT"))
             .route("birthdayUser", p -> p.path("/api/client/birth-coupon")
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
