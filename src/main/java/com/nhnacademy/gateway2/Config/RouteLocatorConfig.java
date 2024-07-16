@@ -141,6 +141,14 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy/modify")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
+            .route("pointPolicy", p -> p.path("/api/point/policy/active")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://POINT"))
             .route("pointUsage", p -> p.path("/api/point/myPage/use")
                 .and().method("GET")
                 .filters(f -> f.filter(
@@ -168,13 +176,33 @@ public class RouteLocatorConfig {
                         .and().method("GET")
                         .uri("lb://SEARCH"))
 
-                .route("client", p -> p.path("/api/client/role", "/api/client/privacy-page")
-                        .and().method("GET")
-                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-                        .uri("lb://CLIENT"))
-                .route("client", p -> p.path("/api/client/grade")
-                        .and().method("PUT")
-                        .uri("lb://CLIENT"))
+            .route("client", p -> p.path("/api/client/role", "/api/client/privacy-page")
+                .and().method("GET")
+                .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://CLIENT"))
+            .route("client", p -> p.path("/api/client/grade")
+                .and().method("PUT","GET")
+                .uri("lb://CLIENT"))
+            .route("userName", p -> p.path("/api/client/name")
+                .and().method("GET")
+                .uri("lb://Client"))
+            .route("pointAccumulation", p -> p.path("/api/point/adminPage/delete/{pointAccumulationHistoryId}")
+                .and().method("DELETE")
+                .uri("lb://POINT"))
+            .route("birthdayUser", p -> p.path("/api/client/birth-coupon")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://Client"))
+            .route("paymentReward", p -> p.path("/api/coupon/payment/reward")
+                .filters(f -> f.filter(
+                    jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                .uri("lb://COUPON"))
+
+            .route("refundOrderClient", p -> p.path("/api/refund")
+                .uri("lb://orderPaymentRefund"))
+
+
+
 
             .build();
     }
