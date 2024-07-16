@@ -197,6 +197,13 @@ public class RouteLocatorConfig {
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                 .uri("lb://COUPON"))
+
+            .route("refundOrderClient", p -> p.path("/api/refund")
+                .uri("lb://orderPaymentRefund"))
+
+
+
+
             .build();
     }
 
