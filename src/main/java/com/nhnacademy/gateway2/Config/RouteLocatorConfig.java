@@ -85,6 +85,9 @@ public class RouteLocatorConfig {
                         .and().query("type")
                         .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
                         .uri("lb://orderPaymentRefund"))
+                .route("shipping", p -> p.path("/api/shipping-policy/**")
+                        .filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
+                        .uri("lb://orderPaymentRefund"))
             .route("coupon", p -> p.path("/api/coupon/myPage")
                 .filters(f -> f.filter(
                     jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
