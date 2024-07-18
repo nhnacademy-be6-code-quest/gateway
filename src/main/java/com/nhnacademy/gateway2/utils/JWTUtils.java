@@ -2,23 +2,17 @@ package com.nhnacademy.gateway2.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class JWTUtils {
-    private final SecretKey secretKey;
-
-    public JWTUtils(
-            @Value("${spring.jwt.secret}")String secret) {
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-    }
+    private final SecretKey jwtSecretKey;
 
     public String getCategory(String token) {
         return getClaimsFromToken(token).get("category", String.class);
@@ -41,6 +35,6 @@ public class JWTUtils {
     }
 
     private Claims getClaimsFromToken(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(jwtSecretKey).build().parseSignedClaims(token).getPayload();
     }
 }
