@@ -1,6 +1,8 @@
 package com.nhnacademy.gateway2.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +20,9 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class KeyManagerConfig {
-    private static final String URL = "https://api-keymanager.nhncloudservice.com/keymanager/v1.2/appkey/";
+    private static final String BASE_URL = "https://api-keymanager.nhncloudservice.com/keymanager/v1.2/appkey/";
     @Value("${key-manager.api.key}")
     private String apiKey;
     @Value("${user.access.key.id}")
@@ -31,44 +34,45 @@ public class KeyManagerConfig {
     @Value("${secret.key.client.encoding}")
     private String keyClientEncoding;
 
+    private final RestTemplate restTemplate;
+
     @Bean
     public SecretKey jwtSecretKey() {
-        String jwtSecretKey = getKey(new RestTemplate().exchange(
-                getURL(jwtSecret),
-                HttpMethod.GET,
-                getAccessHeaders(),
-                JSONObject.class
-        ).getBody());
+        String jwtSecretKey = getKey(getSecret(jwtSecret));
         log.info("JWT Secret Key: {}", jwtSecretKey);
         return new SecretKeySpec(jwtSecretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
     @Bean
     public String clientEncodingKey() {
-        String clientEncoding = getKey(new RestTemplate().exchange(
-                getURL(keyClientEncoding),
-                HttpMethod.GET,
-                getAccessHeaders(),
-                JSONObject.class
-        ).getBody());
+        String clientEncoding = getKey(getSecret(keyClientEncoding));
         log.info("Client Encoding Key: {}", clientEncoding);
         return clientEncoding;
     }
 
-    private HttpEntity<String> getAccessHeaders() {
+    private String getKey(String jsonResponse) {
+        try {
+            Map<String, Object> responseMap = new ObjectMapper().readValue(jsonResponse, Map.class);
+            Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
+            return (String) bodyMap.get("secret");
+        } catch (Exception e) {
+            log.error("Error parsing JSON response", e);
+            return null;
+        }
+    }
+
+    private String getSecret(String secretKey) {
+        String url = BASE_URL + apiKey + "/secrets/" + secretKey;
+        HttpHeaders headers = getAccessHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        return restTemplate.exchange(url, HttpMethod.GET, entity, String.class).getBody();
+    }
+
+    private HttpHeaders getAccessHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-TC-AUTHENTICATION-ID", accessKeyId);
         headers.add("X-TC-AUTHENTICATION-SECRET", accessKeySecret);
-        return new HttpEntity<>(headers);
-    }
-
-    private String getKey(JSONObject jsonObject) {
-        Map<String, Object> responseMap = jsonObject;
-        Map<String, Object> bodyMap = (Map<String, Object>) responseMap.get("body");
-        return (String) bodyMap.get("secret");
-    }
-
-    private String getURL(String secretKey) {
-        return URL + apiKey + "/secrets/" + secretKey;
+        return headers;
     }
 }

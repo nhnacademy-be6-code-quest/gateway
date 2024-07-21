@@ -16,6 +16,8 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<JwtAuthorizationHeaderFilter.Config> {
+    private static final String ACCESS = "access";
+
     private final JWTUtils jwtUtils;
     private final TransformerUtils transformerUtils;
 
@@ -37,16 +39,16 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
         return (exchange, chain) -> {
             log.info("jwt-validation-filter");
             ServerHttpRequest request = exchange.getRequest();
-            if (!request.getHeaders().containsKey("access")) {
+            if (!request.getHeaders().containsKey(ACCESS)) {
                 log.info("jwt-validation-filter access header missing");
                 return chain.filter(exchange);
             } else {
-                String accessToken = request.getHeaders().getFirst("access");
+                String accessToken = request.getHeaders().getFirst(ACCESS);
 
                 if (jwtUtils.isExpired(accessToken)) {
                     log.info("jwt-validation-filter expired");
                     return handleExpired(exchange);
-                } else if (!jwtUtils.getCategory(accessToken).equals("access")) {
+                } else if (!jwtUtils.getCategory(accessToken).equals(ACCESS)) {
                     log.info("jwt-validation-filter notfound access");
                     return handleInvalidToken(exchange);
                 }
