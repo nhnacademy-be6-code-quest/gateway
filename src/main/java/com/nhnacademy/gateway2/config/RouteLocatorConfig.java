@@ -71,7 +71,7 @@ public class RouteLocatorConfig {
                         .and().method("GET")
                         .uri(REVIEW_LB))
 
-                .route(MESSAGE, p -> p.path("/send/change-password", "/send/recover-account")
+                .route(MESSAGE, p -> p.path("/send/change-password", "/send/recover-account/**")
                         .uri(MESSAGE_LB))
 
                 .route(PRODUCT, p -> p.path("/api/product/admin/**")
